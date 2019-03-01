@@ -1,6 +1,9 @@
 # Vagrant files
 .vagrant/
 
+# PyCharm
+.idea/
+
 # Mac .DS_Store file
 .DS_Store
 
