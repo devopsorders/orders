@@ -374,7 +374,7 @@ int-import-graph=
 overgeneral-exceptions=Exception
 
 
-[pre-commit-hook]
-# command=custom_pylint
-# params=--rcfile=/path/to/another/pylint.rc
-limit=9.0
+#[pre-commit-hook]
+## command=custom_pylint
+## params=--rcfile=/path/to/another/pylint.rc
+#limit=9.0
