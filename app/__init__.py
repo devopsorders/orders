@@ -14,7 +14,7 @@ app = Flask(__name__)
 # We'll just use SQLite here so we don't need an external database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db/development.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'please, tell nobody... Shhhh'
+app.config['SECRET_KEY'] = 'Please, tell nobody... Shhhhh'
 app.config['LOGGING_LEVEL'] = logging.INFO
 
 from . import service
@@ -30,7 +30,6 @@ if __name__ != '__main__':
     else:
         service.initialize_logging()
 
-    # TODO init tables
-    # service.init_db()  # make our sqlalchemy tables
+    service.init_db()  # make our sqlalchemy tables
 
 app.logger.info('Logging established')

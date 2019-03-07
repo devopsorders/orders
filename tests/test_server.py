@@ -6,14 +6,16 @@ Test cases can be run with the following:
   codecov --token=$CODECOV_TOKEN
 """
 
-import unittest
-import os
 import logging
+import os
+import unittest
+
 from flask_api import status  # HTTP Status Codes
-# from unittest.mock import MagicMock, patch
-#from app.models import Order, DataValidationError, db
-#from .order_factory import OrderFactory
+
+# from .order_factory import OrderFactory
 import app.service as service
+# from unittest.mock import MagicMock, patch
+from app.models import db
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 
@@ -38,15 +40,14 @@ class TestOrderServer(unittest.TestCase):
 
     def setUp(self):
         """ Runs before each test """
-        #service.init_db()
-        #db.drop_all()  # clean up the last tests
-        #db.create_all()  # create new tables
+        service.init_db()
+        db.drop_all()  # clean up the last tests
+        db.create_all()  # create new tables
         self.app = service.app.test_client()
 
     def tearDown(self):
-        pass
-        #db.session.remove()
-        #db.drop_all()
+        db.session.remove()
+        db.drop_all()
 
     # def _create_orders(self, count):
     #     """ Factory method to create orders in bulk """
