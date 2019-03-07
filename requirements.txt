@@ -21,5 +21,5 @@ pytest==4.3.0
 pytest-cov==2.6.1
 
 # Code coverage
-coverage==4.5.1
+coverage==4.5.2
 codecov==2.0.15
