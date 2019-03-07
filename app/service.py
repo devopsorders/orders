@@ -18,8 +18,7 @@ from flask_api import status  # HTTP Status Codes
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
-#from .models import Order, DataValidationError
-
+from .models import Order, DataValidationError
 
 # Import Flask application
 from . import app
@@ -28,16 +27,16 @@ from . import app
 ######################################################################
 # Error Handlers
 ######################################################################
-# @app.errorhandler(DataValidationError)
-# def request_validation_error(error):
-#     """ Handles Value Errors from bad data """
-#     return bad_request(error)
+@app.errorhandler(DataValidationError)
+def request_validation_error(error):
+    """ Handles Value Errors from bad data """
+    return bad_request(error)
 
 
 @app.errorhandler(status.HTTP_400_BAD_REQUEST)
 def bad_request(error):
-    """ Handles bad reuests with 400_BAD_REQUEST """
-    message = error.message or str(error)
+    """ Handles bad requests with 400_BAD_REQUEST """
+    message = str(error)  # error.message or str(error) # TODO this might need to be put back for certain tests
     app.logger.warning(message)
     return jsonify(status=status.HTTP_400_BAD_REQUEST,
                    error='Bad Request',
@@ -47,7 +46,7 @@ def bad_request(error):
 @app.errorhandler(status.HTTP_404_NOT_FOUND)
 def not_found(error):
     """ Handles resources not found with 404_NOT_FOUND """
-    message = error.message or str(error)
+    message = str(error)
     app.logger.warning(message)
     return jsonify(status=status.HTTP_404_NOT_FOUND,
                    error='Not Found',
@@ -57,7 +56,7 @@ def not_found(error):
 @app.errorhandler(status.HTTP_405_METHOD_NOT_ALLOWED)
 def method_not_supported(error):
     """ Handles unsuppoted HTTP methods with 405_METHOD_NOT_SUPPORTED """
-    message = error.message or str(error)
+    message = str(error)
     app.logger.warning(message)
     return jsonify(status=status.HTTP_405_METHOD_NOT_ALLOWED,
                    error='Method not Allowed',
@@ -67,7 +66,7 @@ def method_not_supported(error):
 @app.errorhandler(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 def mediatype_not_supported(error):
     """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
-    message = error.message or str(error)
+    message = str(error)
     app.logger.warning(message)
     return jsonify(status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                    error='Unsupported media type',
@@ -77,7 +76,7 @@ def mediatype_not_supported(error):
 @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
     """ Handles unexpected server error with 500_SERVER_ERROR """
-    message = error.message or str(error)
+    message = str(error)
     app.logger.error(message)
     return jsonify(status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                    error='Internal Server Error',
@@ -114,22 +113,25 @@ def index():
 ######################################################################
 # UPDATE AN EXISTING ORDER
 ######################################################################
-# TODO this should not be allowed
 
 
 ######################################################################
 # DELETE AN ORDER
 ######################################################################
-# TODO this should not be allowed
+
+
+######################################################################
+# CANCEL AN ORDER
+######################################################################
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
-# def init_db():
-#     """ Initializes the SQLAlchemy app """
-#     global app
-#     Order.init_db(app)
+def init_db():
+    """ Initializes the SQLAlchemy app """
+    global app
+    Order.init_db(app)
 
 
 def check_content_type(content_type):
