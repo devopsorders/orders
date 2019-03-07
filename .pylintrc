@@ -56,7 +56,7 @@ disable=
     no-member,
     #attribute-defined-outside-init,
     #duplicate-code,
-    #fixme,
+    fixme,
     #invalid-name,
     missing-docstring,
     #protected-access,

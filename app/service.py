@@ -13,7 +13,7 @@ TODO And more to be added...
 import logging
 import sys
 
-from flask import jsonify, request, url_for, abort
+from flask import jsonify, request, abort
 from flask_api import status  # HTTP Status Codes
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
