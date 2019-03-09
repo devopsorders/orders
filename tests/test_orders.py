@@ -1,7 +1,7 @@
 """
 Test cases for Order Model
 Test cases can be run with:
-  nosetests
+  pytest
   coverage report -m
 """
 
