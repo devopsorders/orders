@@ -9,8 +9,7 @@ import os
 import unittest
 
 from app import app
-from app.models import Order, OrderItem, DataValidationError, db
-from app.models import STATUS_RECEIVED
+from app.models import Order, OrderItem, OrderStatus, DataValidationError, db
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 
@@ -53,7 +52,7 @@ class TestOrders(unittest.TestCase):
                         'quantity': 1,
                         'price': 159,
                         }]
-        order = Order(customer_id=1, status=STATUS_RECEIVED)
+        order = Order(customer_id=1, status=OrderStatus.RECEIVED)
         for order_item in order_items:
             order.order_items.append(OrderItem(product_id=order_item['product_id'],
                                                name=order_item['name'],
@@ -86,7 +85,7 @@ class TestOrders(unittest.TestCase):
                         'quantity': 1,
                         'price': 159,
                         }]
-        data = {'customer_id': 1, 'status': STATUS_RECEIVED, 'order_items': order_items}
+        data = {'customer_id': 1, 'status': OrderStatus.RECEIVED, 'order_items': order_items}
         order = Order()
         order.deserialize(data)
         self.assertIsNotNone(order)

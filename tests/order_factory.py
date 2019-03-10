@@ -7,7 +7,7 @@ from datetime import datetime
 import factory
 from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyFloat
 
-from app.models import Order, OrderItem, STATUS_DELIVERED, STATUS_PROCESSING, STATUS_RECEIVED, STATUS_SHIPPED
+from app.models import Order, OrderItem, OrderStatus
 
 PRODUCTS = [
     {'product_id': 1, 'name': 'Kindle'},
@@ -40,7 +40,8 @@ class OrderFactory(factory.Factory):
     id = factory.Sequence(lambda n: n + 1)  # +1 so id don't start at 0
     customer_id = FuzzyInteger(1, 20)
     order_date = factory.LazyFunction(datetime.now)
-    status = FuzzyChoice(choices=[STATUS_RECEIVED, STATUS_PROCESSING, STATUS_DELIVERED, STATUS_SHIPPED])
+    status = FuzzyChoice(
+        choices=[OrderStatus.RECEIVED, OrderStatus.PROCESSING, OrderStatus.SHIPPED, OrderStatus.DELIVERED])
 
     # order_items = factory.RelatedFactory(OrderItemFactory, 'order_items', action=models.UserLog.ACTION_CREATE)
 

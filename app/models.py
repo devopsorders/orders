@@ -36,11 +36,12 @@ class DataValidationError(Exception):
     pass
 
 
-STATUS_RECEIVED = 'received'
-STATUS_PROCESSING = 'processing'
-STATUS_SHIPPED = 'shipped'
-STATUS_DELIVERED = 'delivered'
-STATUS_CANCELED = 'canceled'
+class OrderStatus:
+    RECEIVED = 'received'
+    PROCESSING = 'processing'
+    SHIPPED = 'shipped'
+    DELIVERED = 'delivered'
+    CANCELED = 'canceled'
 
 
 class Order(db.Model):
