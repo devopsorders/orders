@@ -15,6 +15,7 @@ import sys
 
 from flask import jsonify, request, abort, url_for, make_response
 from flask_api import status  # HTTP Status Codes
+from werkzeug.exceptions import NotFound
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
@@ -121,6 +122,17 @@ def list_orders():
 ######################################################################
 # RETRIEVE AN ORDER
 ######################################################################
+@app.route('/orders/<int:order_id>', methods=['GET'])
+def get_orders(order_id):
+    """
+    Retrieve a single order
+    This endpoint will return a order based on it's id
+    """
+    app.logger.info('Request for order with id: %s', order_id)
+    order = Order.find(order_id)
+    if not order:
+        raise NotFound("Order with id '{}' was not found.".format(order_id))
+    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################

@@ -127,6 +127,15 @@ class TestOrders(unittest.TestCase):
         order = Order()
         self.assertRaises(DataValidationError, order.deserialize, data)
 
+    def test_find_order(self):
+        """ Find a order by ID """
+        Order(customer_id=1, status=STATUS_RECEIVED).save()
+        other_order = Order(customer_id=2, status=STATUS_RECEIVED)
+        other_order.save()
+        order = Order.find(other_order.id)
+        self.assertIsNot(order, None)
+        self.assertEqual(order.id, other_order.id)
+        self.assertEqual(order.status, STATUS_RECEIVED)
 
 ######################################################################
 #   M A I N
