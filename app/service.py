@@ -13,7 +13,7 @@ TODO And more to be added...
 import logging
 import sys
 
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, url_for, make_response
 from flask_api import status  # HTTP Status Codes
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
@@ -108,7 +108,26 @@ def index():
 ######################################################################
 # ADD A NEW ORDER
 ######################################################################
+@app.route('/orders', methods=['POST'])
+def create_orders():
+    """
+    Creates an Order
+    This endpoint will create an Order based the data in the body that is posted
+    """
+    app.logger.info('Request to create an order')
+    check_content_type('application/json')
+    order = Order()
+    order.deserialize(request.get_json())
+    order.save()
+    message = order.serialize()
+    # location_url = url_for('get_orders', order_id=order.id, _external=True)
 
+    #TODO: Uncomment this once LIST is implemented
+
+    return make_response(jsonify(message), status.HTTP_201_CREATED)
+    #                     {
+    #                         'Location': location_url
+    #                     })
 
 ######################################################################
 # UPDATE AN EXISTING ORDER
