@@ -98,7 +98,25 @@ def index():
 ######################################################################
 # LIST ALL ORDERS
 ######################################################################
+@app.route('/orders', methods=['GET'])
+def list_orders():
+    """ Returns all of the Orders """
+    app.logger.info('Request for order list')
+    #orders = []
+    #category = request.args.get('category')
+    #name = request.args.get('name')
+    # TODO implement querying later
+    # if category:
+    #     orders = Order.find_by_category(category)
+    # elif name:
+    #     orders = Orders.find_by_name(name)
+    # else:
+    #     orders = Order.all()
 
+    orders = Order.all()
+
+    results = [order.serialize() for order in orders]
+    return make_response(jsonify(results), status.HTTP_200_OK)
 
 ######################################################################
 # RETRIEVE AN ORDER
