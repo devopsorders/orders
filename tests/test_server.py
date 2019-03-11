@@ -72,6 +72,21 @@ class TestOrderServer(unittest.TestCase):
 
     # TODO add rest of tests here
 
+    def test_get_order(self):
+        """ Get a single order """
+        # get the id of an order
+        test_order = self._create_orders(1)[0]
+        resp = self.app.get('/orders/{}'.format(test_order.id),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data['id'], test_order.id)
+
+    def test_get_order_not_found(self):
+        """ Get an order that is not found """
+        resp = self.app.get('/orders/0')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_create_order(self):
         """ Create a new Order """
         test_order_item = OrderItem(product_id=1, name="Test Item", quantity=10, price=69.00)
