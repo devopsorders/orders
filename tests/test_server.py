@@ -102,6 +102,14 @@ class TestOrderServer(unittest.TestCase):
         # self.assertEqual(new_pet['category'], test_pet.category, "Categories do not match")
         # self.assertEqual(new_pet['available'], test_pet.available, "Availability does not match")
 
+        def test_get_order_list(self):
+            """ Get a list of Orders """
+            self._create_orders(5)
+            resp = self.app.get('/orders')
+            self.assertEqual(resp.status_code, status.HTTP_200_OK)
+            data = resp.get_json()
+            self.assertEqual(len(data), 5)
+
 ######################################################################
 #   M A I N
 ######################################################################
