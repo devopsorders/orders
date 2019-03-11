@@ -114,6 +114,12 @@ class Order(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
 
+    @classmethod
+    def all(cls):
+        """ Returns all of the Orders in the database """
+        cls.logger.info('Processing all Orders')
+        return cls.query.all()
+
     @property
     def total(self):
         order_total = 0

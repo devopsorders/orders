@@ -14,7 +14,7 @@ from flask_api import status  # HTTP Status Codes
 
 import app.service as service
 # from unittest.mock import MagicMock, patch
-from app.models import db
+from app.models import Order, OrderItem, db, STATUS_RECEIVED
 from .order_factory import OrderFactory
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
@@ -72,6 +72,35 @@ class TestOrderServer(unittest.TestCase):
 
     # TODO add rest of tests here
 
+    def test_create_order(self):
+        """ Create a new Order """
+        test_order_item = OrderItem(product_id=1, name="Test Item", quantity=10, price=69.00)
+        test_order = Order(customer_id=1, status=STATUS_RECEIVED, order_items=[test_order_item])
+        resp = self.app.post('/orders',
+                             json=test_order.serialize(),
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+
+        # TODO: Add this test back in once LIST is created
+        # location = resp.headers.get('Location', None)
+        # self.assertTrue(location != None)
+
+        # Check the data is correct
+        new_order = resp.get_json()
+        self.assertTrue(new_order['id'] != None, "No order ID")
+        self.assertEqual(new_order['status'], test_order.status, "Status does not match")
+        self.assertEqual(new_order['customer_id'], test_order.customer_id, "Customer ID does not match")
+        self.assertEqual(new_order['order_items'][0]['quantity'], test_order.order_items[0].quantity, "Quantity does not match")
+
+        # Check that the location header was correct
+        # resp = self.app.get(location,
+        #                    content_type='application/json')
+        # self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # new_order = resp.get_json()
+        # self.assertEqual(new_pet['name'], test_pet.name, "Names do not match")
+        # self.assertEqual(new_pet['category'], test_pet.category, "Categories do not match")
+        # self.assertEqual(new_pet['available'], test_pet.available, "Availability does not match")
 
 ######################################################################
 #   M A I N
