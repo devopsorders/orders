@@ -40,6 +40,29 @@ class TestOrders(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    def test_create_an_order(self):
+        """ Create an order with an item and assert that it exists """
+        order_item = OrderItem(product_id=1, name="Protein Bar (12 Count)", quantity=3, price=69.00)
+        order = Order(customer_id=1, status=STATUS_RECEIVED, order_items=[order_item])
+        self.assertTrue(order != None)
+        self.assertEqual(order.id, None)
+        self.assertEqual(order.status, STATUS_RECEIVED)
+        self.assertEqual(order.order_items[0].quantity, 3)
+
+    def test_add_an_order(self):
+        """ Create an order with an item and add it to the database """
+        orders = Order.all()
+        self.assertEqual(orders, [])
+        order_item = OrderItem(product_id=1, name="Protein Bar (12 Count)", quantity=3, price=69.00)
+        order = Order(customer_id=1, status=STATUS_RECEIVED, order_items=[order_item])
+        self.assertTrue(order != None)
+        self.assertEqual(order.id, None)
+        order.save()
+        # Asert that it was assigned an id and shows up in the database
+        self.assertEqual(order.id, 1)
+        orders = Order.all()
+        self.assertEqual(len(orders), 1)
+
     def test_serialize_an_order(self):
         """ Test serialization of an order """
         order_items = [{'product_id': 1,
@@ -103,6 +126,15 @@ class TestOrders(unittest.TestCase):
         order = Order()
         self.assertRaises(DataValidationError, order.deserialize, data)
 
+    def test_find_order(self):
+        """ Find a order by ID """
+        Order(customer_id=1, status=STATUS_RECEIVED).save()
+        other_order = Order(customer_id=2, status=STATUS_RECEIVED)
+        other_order.save()
+        order = Order.find(other_order.id)
+        self.assertIsNot(order, None)
+        self.assertEqual(order.id, other_order.id)
+        self.assertEqual(order.status, STATUS_RECEIVED)
 
 ######################################################################
 #   M A I N

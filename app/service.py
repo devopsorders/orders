@@ -13,8 +13,9 @@ TODO And more to be added...
 import logging
 import sys
 
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, url_for, make_response
 from flask_api import status  # HTTP Status Codes
+from werkzeug.exceptions import NotFound
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
@@ -98,17 +99,65 @@ def index():
 ######################################################################
 # LIST ALL ORDERS
 ######################################################################
+@app.route('/orders', methods=['GET'])
+def list_orders():
+    """ Returns all of the Orders """
+    app.logger.info('Request for order list')
+    #orders = []
+    #category = request.args.get('category')
+    #name = request.args.get('name')
+    # TODO implement querying later
+    # if category:
+    #     orders = Order.find_by_category(category)
+    # elif name:
+    #     orders = Orders.find_by_name(name)
+    # else:
+    #     orders = Order.all()
 
+    orders = Order.all()
+
+    results = [order.serialize() for order in orders]
+    return make_response(jsonify(results), status.HTTP_200_OK)
 
 ######################################################################
 # RETRIEVE AN ORDER
 ######################################################################
+@app.route('/orders/<int:order_id>', methods=['GET'])
+def get_orders(order_id):
+    """
+    Retrieve a single order
+    This endpoint will return a order based on it's id
+    """
+    app.logger.info('Request for order with id: %s', order_id)
+    order = Order.find(order_id)
+    if not order:
+        raise NotFound("Order with id '{}' was not found.".format(order_id))
+    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
 # ADD A NEW ORDER
 ######################################################################
+@app.route('/orders', methods=['POST'])
+def create_orders():
+    """
+    Creates an Order
+    This endpoint will create an Order based the data in the body that is posted
+    """
+    app.logger.info('Request to create an order')
+    check_content_type('application/json')
+    order = Order()
+    order.deserialize(request.get_json())
+    order.save()
+    message = order.serialize()
+    # location_url = url_for('get_orders', order_id=order.id, _external=True)
 
+    #TODO: Uncomment this once LIST is implemented
+
+    return make_response(jsonify(message), status.HTTP_201_CREATED)
+    #                     {
+    #                         'Location': location_url
+    #                     })
 
 ######################################################################
 # UPDATE AN EXISTING ORDER

@@ -115,6 +115,12 @@ class Order(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
 
+    @classmethod
+    def all(cls):
+        """ Returns all of the Orders in the database """
+        cls.logger.info('Processing all Orders')
+        return cls.query.all()
+
     @property
     def total(self):
         order_total = 0
@@ -124,9 +130,18 @@ class Order(db.Model):
 
     # return all orders
 
-    # find order by id
 
-    # find order or 404
+    @classmethod
+    def find(cls, order_id):
+        """ Finds an order by it's ID """
+        cls.logger.info('Processing lookup for id %s ...', order_id)
+        return cls.query.get(order_id)
+
+    @classmethod
+    def find_or_404(cls, order_id):
+        """ Find a order by it's id """
+        cls.logger.info('Processing lookup or 404 for id %s ...', order_id)
+        return cls.query.get_or_404(order_id)
 
     # find by some attribute such as status
 
