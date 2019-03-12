@@ -14,7 +14,7 @@ from flask_api import status  # HTTP Status Codes
 
 import app.service as service
 # from unittest.mock import MagicMock, patch
-from app.models import Order, OrderItem, db, STATUS_RECEIVED
+from app.models import Order, OrderItem, db, OrderStatus
 from .order_factory import OrderFactory
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
@@ -70,6 +70,15 @@ class TestOrderServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(data['name'], 'Orders REST API Service')
 
+    def test_cancel_order(self):
+        """ Cancel a single Order """
+        test_order = self._create_orders(1)[0]
+        resp = self.app.put('/orders/{}/cancel'.format(test_order.id),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        cancelled_order = resp.get_json()
+        self.assertEqual(cancelled_order['status'], OrderStatus.CANCELED)
+
     # TODO add rest of tests here
 
     def test_get_order(self):
@@ -90,7 +99,7 @@ class TestOrderServer(unittest.TestCase):
     def test_create_order(self):
         """ Create a new Order """
         test_order_item = OrderItem(product_id=1, name="Test Item", quantity=10, price=69.00)
-        test_order = Order(customer_id=1, status=STATUS_RECEIVED, order_items=[test_order_item])
+        test_order = Order(customer_id=1, status=OrderStatus.RECEIVED, order_items=[test_order_item])
         resp = self.app.post('/orders',
                              json=test_order.serialize(),
                              content_type='application/json')
@@ -103,10 +112,11 @@ class TestOrderServer(unittest.TestCase):
 
         # Check the data is correct
         new_order = resp.get_json()
-        self.assertTrue(new_order['id'] != None, "No order ID")
+        self.assertTrue(new_order['id'] is not None, "No order ID")
         self.assertEqual(new_order['status'], test_order.status, "Status does not match")
         self.assertEqual(new_order['customer_id'], test_order.customer_id, "Customer ID does not match")
-        self.assertEqual(new_order['order_items'][0]['quantity'], test_order.order_items[0].quantity, "Quantity does not match")
+        self.assertEqual(new_order['order_items'][0]['quantity'], test_order.order_items[0].quantity,
+                         "Quantity does not match")
 
         # Check that the location header was correct
         # resp = self.app.get(location,
@@ -117,13 +127,14 @@ class TestOrderServer(unittest.TestCase):
         # self.assertEqual(new_pet['category'], test_pet.category, "Categories do not match")
         # self.assertEqual(new_pet['available'], test_pet.available, "Availability does not match")
 
-        def test_get_order_list(self):
-            """ Get a list of Orders """
-            self._create_orders(5)
-            resp = self.app.get('/orders')
-            self.assertEqual(resp.status_code, status.HTTP_200_OK)
-            data = resp.get_json()
-            self.assertEqual(len(data), 5)
+    def test_get_order_list(self):
+        """ Get a list of Orders """
+        self._create_orders(5)
+        resp = self.app.get('/orders')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+
 
 ######################################################################
 #   M A I N

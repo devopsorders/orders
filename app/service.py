@@ -5,9 +5,10 @@ Paths:
 GET /orders - Returns a list all of Orders
 GET /orders/{id} - Returns the Order with a given id number
 POST /orders - creates a new Order record in the database
-PUT /orders/{id} - not allowed
-DELETE /orders/{id} - not allowed
-TODO And more to be added...
+PUT /orders/{id} - update a complete order
+PATCH /orders/{id} - update part of an order
+DELETE /orders/{id} - delete an order
+PUT /orders/{id}/cancel - cancel an order
 """
 
 import logging
@@ -19,7 +20,7 @@ from werkzeug.exceptions import NotFound
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
-from .models import Order, DataValidationError
+from .models import Order, DataValidationError, OrderStatus
 
 # Import Flask application
 from . import app
@@ -172,6 +173,23 @@ def create_orders():
 ######################################################################
 # CANCEL AN ORDER
 ######################################################################
+@app.route('/orders/<int:order_id>/cancel', methods=['PUT'])
+def cancel_order(order_id):
+    """
+    Cancel an order
+    This endpoint will cancel an order and notify any other systems
+    """
+    app.logger.info('Request to cancel order with id: %s', order_id)
+    check_content_type('application/json')
+    order = Order.find(order_id)
+    if not order:
+        raise NotFound("Order with id '{}' was not found.".format(order_id))
+    order.id = order_id
+    order.status = OrderStatus.CANCELED
+    order.save()
+    # Notify other systems like shipping/billing of cancellation...
+    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

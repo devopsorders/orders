@@ -101,7 +101,7 @@ class Order(db.Model):
                                                   price=float(order_item['price'])))
         except KeyError as error:
             raise DataValidationError('Invalid order: missing ' + error.args[0])
-        except TypeError as error:
+        except TypeError:
             raise DataValidationError('Invalid order: body of request contained bad or no data')
         return self
 
@@ -129,7 +129,6 @@ class Order(db.Model):
         return order_total
 
     # return all orders
-
 
     @classmethod
     def find(cls, order_id):
