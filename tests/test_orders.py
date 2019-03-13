@@ -7,6 +7,7 @@ Test cases can be run with:
 
 import os
 import unittest
+import datetime
 
 from app import app
 from app.models import Order, OrderItem, DataValidationError, db
@@ -136,6 +137,13 @@ class TestOrders(unittest.TestCase):
         self.assertIsNot(order, None)
         self.assertEqual(order.id, other_order.id)
         self.assertEqual(order.status, STATUS_RECEIVED)
+
+    def test_find_order_by_date(self):
+        """ Find an order by date """
+        order = Order(customer_id=1, status=STATUS_RECEIVED).save()
+        today = datetime.datetime.now()
+        self.assertIsNot(order.order_date, None)
+        self.assertEqual(order.order_date, today.strftime("%x"))
 
 ######################################################################
 #   M A I N
