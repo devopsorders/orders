@@ -127,8 +127,17 @@ class Order(db.Model):
             order_total += order_item.total
         return order_total
 
-    # return all orders
+    @classmethod
+    def find_by_date(cls, date):
+        """ Returns all of the Orders with a month such as "March"
+        Args:
+            date (string): the word of the month (January, February, etc.) you want to find
+        """
+        cls.logger.info('Processing category query for %s ...', date)
+        return cls.query.filter(cls.order_date == date)
+    # TODO: Add a limit on the number of results this returns
 
+    # return all orders
 
     @classmethod
     def find(cls, order_id):

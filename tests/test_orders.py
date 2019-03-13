@@ -8,6 +8,7 @@ Test cases can be run with:
 import os
 import unittest
 from datetime import datetime
+from datetime import date
 
 from app import app
 from app.models import Order, OrderItem, DataValidationError, db
@@ -139,13 +140,12 @@ class TestOrders(unittest.TestCase):
         self.assertEqual(order.status, STATUS_RECEIVED)
 
     def test_find_order_by_date(self):
-        """ Find an order by date """
+        """ Find orders by month """
         order = Order(customer_id=1, status=STATUS_RECEIVED)
         order.save()
-        today = datetime.now()
+        month = date.today().strftime("%B") # %B returns month as a word such as January or December
         self.assertIsNot(order.order_date, None)
-        self.assertEqual(order.order_date, today.strftime("%x"))
-
+        self.assertEqual(order.order_date.strftime("%B"), month)
 
 ######################################################################
 #   M A I N
