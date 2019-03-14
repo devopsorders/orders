@@ -141,10 +141,10 @@ class TestOrders(unittest.TestCase):
     def test_find_orders_since(self):
         """ Find an order since a date """
         for _ in list(range(5)):
-            Order(customer_id=1, status=STATUS_RECEIVED).save()
+            Order(customer_id=1, status=OrderStatus.RECEIVED).save()
 
         # create old order
-        Order(customer_id=1, status=STATUS_RECEIVED, order_date=datetime.today() - timedelta(weeks=52)).save()
+        Order(customer_id=1, status=OrderStatus.RECEIVED, order_date=datetime.today() - timedelta(weeks=52)).save()
 
         self.assertEqual(len(Order.all()), 6)
         yesterday = date.today() - timedelta(days=1)
