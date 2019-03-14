@@ -114,12 +114,6 @@ class Order(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
 
-    @classmethod
-    def all(cls):
-        """ Returns all of the Orders in the database """
-        cls.logger.info('Processing all Orders')
-        return cls.query.all()
-
     @property
     def total(self):
         order_total = 0
@@ -127,17 +121,12 @@ class Order(db.Model):
             order_total += order_item.total
         return order_total
 
-    @classmethod
-    def find_by_date(cls, date):
-        """ Returns all of the Orders with a month such as "March"
-        Args:
-            date (string): the word of the month (January, February, etc.) you want to find
-        """
-        cls.logger.info('Processing category query for %s ...', date)
-        return cls.query.filter(cls.order_date == date)
-    # TODO: Add a limit on the number of results this returns
-
     # return all orders
+    @classmethod
+    def all(cls):
+        """ Returns all of the Orders in the database """
+        cls.logger.info('Processing all Orders')
+        return cls.query.all()
 
     @classmethod
     def find(cls, order_id):
@@ -153,7 +142,12 @@ class Order(db.Model):
 
     # find by some attribute such as status
 
-    # find by ...
+    # find by date
+    @classmethod
+    def find_since(cls, order_date_since):
+        """ Finds all orders since a date """
+        cls.logger.info('Processing lookup for orders since %s ...', order_date_since)
+        return cls.query.filter(cls.order_date >= order_date_since).all()
 
 
 class OrderItem(db.Model):
