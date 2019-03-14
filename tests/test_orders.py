@@ -7,6 +7,7 @@ Test cases can be run with:
 
 import os
 import unittest
+from datetime import datetime, date, timedelta
 
 from app import app
 from app.models import Order, OrderItem, OrderStatus, DataValidationError, db
@@ -135,6 +136,19 @@ class TestOrders(unittest.TestCase):
         self.assertIsNot(order, None)
         self.assertEqual(order.id, other_order.id)
         self.assertEqual(order.status, OrderStatus.RECEIVED)
+
+
+    def test_find_orders_since(self):
+        """ Find an order since a date """
+        for _ in list(range(5)):
+            Order(customer_id=1, status=STATUS_RECEIVED).save()
+
+        # create old order
+        Order(customer_id=1, status=STATUS_RECEIVED, order_date=datetime.today() - timedelta(weeks=52)).save()
+
+        self.assertEqual(len(Order.all()), 6)
+        yesterday = date.today() - timedelta(days=1)
+        self.assertEqual(len(Order.find_since(yesterday)), 5)
 
 
 ######################################################################

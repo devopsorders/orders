@@ -104,9 +104,9 @@ def index():
 def list_orders():
     """ Returns all of the Orders """
     app.logger.info('Request for order list')
-    #orders = []
-    #category = request.args.get('category')
-    #name = request.args.get('name')
+    # orders = []
+    # category = request.args.get('category')
+    # name = request.args.get('name')
     # TODO implement querying later
     # if category:
     #     orders = Order.find_by_category(category)
@@ -119,6 +119,7 @@ def list_orders():
 
     results = [order.serialize() for order in orders]
     return make_response(jsonify(results), status.HTTP_200_OK)
+
 
 ######################################################################
 # RETRIEVE AN ORDER
@@ -153,12 +154,13 @@ def create_orders():
     message = order.serialize()
     # location_url = url_for('get_orders', order_id=order.id, _external=True)
 
-    #TODO: Uncomment this once LIST is implemented
+    # TODO: Uncomment this once LIST is implemented
 
     return make_response(jsonify(message), status.HTTP_201_CREATED)
     #                     {
     #                         'Location': location_url
     #                     })
+
 
 ######################################################################
 # UPDATE AN EXISTING ORDER
@@ -184,6 +186,8 @@ def cancel_order(order_id):
     order = Order.find(order_id)
     if not order:
         raise NotFound("Order with id '{}' was not found.".format(order_id))
+
+    # TODO should probably check to make sure this order hasn't been shipped or delivered first
     order.id = order_id
     order.status = OrderStatus.CANCELED
     order.save()
