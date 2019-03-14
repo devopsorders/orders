@@ -36,11 +36,12 @@ class DataValidationError(Exception):
     pass
 
 
-STATUS_RECEIVED = 'received'
-STATUS_PROCESSING = 'processing'
-STATUS_SHIPPED = 'shipped'
-STATUS_DELIVERED = 'delivered'
-STATUS_CANCELED = 'canceled'
+class OrderStatus:
+    RECEIVED = 'received'
+    PROCESSING = 'processing'
+    SHIPPED = 'shipped'
+    DELIVERED = 'delivered'
+    CANCELED = 'canceled'
 
 
 class Order(db.Model):
@@ -100,7 +101,7 @@ class Order(db.Model):
                                                   price=float(order_item['price'])))
         except KeyError as error:
             raise DataValidationError('Invalid order: missing ' + error.args[0])
-        except TypeError as error:
+        except TypeError:
             raise DataValidationError('Invalid order: body of request contained bad or no data')
         return self
 
@@ -114,12 +115,6 @@ class Order(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
 
-    @classmethod
-    def all(cls):
-        """ Returns all of the Orders in the database """
-        cls.logger.info('Processing all Orders')
-        return cls.query.all()
-
     @property
     def total(self):
         order_total = 0
@@ -128,7 +123,11 @@ class Order(db.Model):
         return order_total
 
     # return all orders
-
+    @classmethod
+    def all(cls):
+        """ Returns all of the Orders in the database """
+        cls.logger.info('Processing all Orders')
+        return cls.query.all()
 
     @classmethod
     def find(cls, order_id):
@@ -144,7 +143,12 @@ class Order(db.Model):
 
     # find by some attribute such as status
 
-    # find by ...
+    # find by date
+    @classmethod
+    def find_since(cls, order_date_since):
+        """ Finds all orders since a date """
+        cls.logger.info('Processing lookup for orders since %s ...', order_date_since)
+        return cls.query.filter(cls.order_date >= order_date_since).all()
 
 
 class OrderItem(db.Model):
