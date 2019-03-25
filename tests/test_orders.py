@@ -64,6 +64,33 @@ class TestOrders(unittest.TestCase):
         orders = Order.all()
         self.assertEqual(len(orders), 1)
 
+    def test_update_an_order(self):
+        """ Update an Order """
+        order_item = OrderItem(product_id=1, name="Protein Bar (12 Count)", quantity=3, price=69.00)
+        order = Order(customer_id=1, status=OrderStatus.RECEIVED, order_items=[order_item])
+        order.save()
+        self.assertEqual(order.id, 1)
+        # Change it an save it
+        order.status = OrderStatus.PROCESSING
+        order.save()
+        self.assertEqual(order.id, 1)
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        orders = Order.all()
+        self.assertEqual(len(orders), 1)
+        self.assertEqual(orders[0].status, OrderStatus.PROCESSING)
+
+    def test_delete_a_order(self):
+        """ Delete an order """
+        order_item = OrderItem(product_id=1, name="Protein Bar (12 Count)", quantity=3, price=69.00)
+        order = Order(customer_id=1, status=OrderStatus.RECEIVED, order_items=[order_item])
+        order.save()
+        self.assertEqual(len(order.all()), 1)
+        # delete the order and make sure it isn't in the database
+        order.delete()
+        self.assertEqual(len(order.all()), 0)
+
+
     def test_serialize_an_order(self):
         """ Test serialization of an order """
         order_items = [{'product_id': 1,
