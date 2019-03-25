@@ -9,6 +9,7 @@ Test cases can be run with the following:
 import logging
 import os
 import unittest
+import json
 
 from flask_api import status  # HTTP Status Codes
 
@@ -127,6 +128,25 @@ class TestOrderServer(unittest.TestCase):
         # self.assertEqual(new_pet['category'], test_pet.category, "Categories do not match")
         # self.assertEqual(new_pet['available'], test_pet.available, "Availability does not match")
 
+    def test_update_order(self):
+        """ Update an existing Order """
+        # create a order to update
+        test_order = OrderFactory()
+        resp = self.app.post('/orders',
+                             json=test_order.serialize(),
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # update the order
+        new_order = resp.get_json()
+        new_order['status'] = OrderStatus.SHIPPED
+        resp = self.app.put('/orders/{}'.format(new_order['id']),
+                            json=new_order,
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_order = resp.get_json()
+        self.assertEqual(updated_order['status'], OrderStatus.SHIPPED)
+
     def test_get_order_list(self):
         """ Get a list of Orders """
         self._create_orders(5)
@@ -134,6 +154,17 @@ class TestOrderServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
+
+    def test_bad_request(self):
+        """ Test a Bad Request by posting invalid Order json """
+        # bad order with no customer id
+        bad_order = dict(status=OrderStatus.RECEIVED)
+        data = json.dumps(bad_order)
+        resp = self.app.post('/orders',
+                             json=data,
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 
 ######################################################################
