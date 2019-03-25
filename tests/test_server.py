@@ -63,6 +63,18 @@ class TestOrderServer(unittest.TestCase):
             orders.append(test_order)
         return orders
 
+    def test_delete_orders(self):
+        """ Delete an order"""
+        test_order = self._create_orders(1)[0]
+        resp = self.app.delete('/orders/{}'.format(test_order.id),
+                               content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get('/orders/{}'.format(test_order.id),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_index(self):
         """ Test the Home Page """
         resp = self.app.get('/')
@@ -134,6 +146,11 @@ class TestOrderServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
+
+    def test_method_not_allowed(self):
+        """ Test a sending invalid http method """
+        resp = self.app.post('/orders/1')
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 ######################################################################
