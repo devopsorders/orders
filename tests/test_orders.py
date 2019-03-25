@@ -45,7 +45,7 @@ class TestOrders(unittest.TestCase):
         """ Create an order with an item and assert that it exists """
         order_item = OrderItem(product_id=1, name="Protein Bar (12 Count)", quantity=3, price=69.00)
         order = Order(customer_id=1, status=OrderStatus.RECEIVED, order_items=[order_item])
-        self.assertTrue(order != None)
+        self.assertTrue(order is not None)
         self.assertEqual(order.id, None)
         self.assertEqual(order.status, OrderStatus.RECEIVED)
         self.assertEqual(order.order_items[0].quantity, 3)
@@ -56,7 +56,7 @@ class TestOrders(unittest.TestCase):
         self.assertEqual(orders, [])
         order_item = OrderItem(product_id=1, name="Protein Bar (12 Count)", quantity=3, price=69.00)
         order = Order(customer_id=1, status=OrderStatus.RECEIVED, order_items=[order_item])
-        self.assertTrue(order != None)
+        self.assertTrue(order is not None)
         self.assertEqual(order.id, None)
         order.save()
         # Asert that it was assigned an id and shows up in the database
@@ -89,7 +89,6 @@ class TestOrders(unittest.TestCase):
         # delete the order and make sure it isn't in the database
         order.delete()
         self.assertEqual(len(order.all()), 0)
-
 
     def test_serialize_an_order(self):
         """ Test serialization of an order """
@@ -154,6 +153,13 @@ class TestOrders(unittest.TestCase):
         order = Order()
         self.assertRaises(DataValidationError, order.deserialize, data)
 
+    def test_deserialize_missing_key(self):
+        """ Test deserialization of missing required keys """
+        # missing customer id
+        data = {'status': OrderStatus.RECEIVED}
+        order = Order()
+        self.assertRaises(DataValidationError, order.deserialize, data)
+
     def test_find_order(self):
         """ Find a order by ID """
         Order(customer_id=1, status=OrderStatus.RECEIVED).save()
@@ -163,7 +169,6 @@ class TestOrders(unittest.TestCase):
         self.assertIsNot(order, None)
         self.assertEqual(order.id, other_order.id)
         self.assertEqual(order.status, OrderStatus.RECEIVED)
-
 
     def test_find_orders_since(self):
         """ Find an order since a date """

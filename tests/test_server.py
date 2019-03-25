@@ -6,15 +6,16 @@ Test cases can be run with the following:
   codecov --token=$CODECOV_TOKEN
 """
 
+import json
 import logging
 import os
 import unittest
-import json
+from datetime import date, timedelta
+from unittest.mock import patch
 
 from flask_api import status  # HTTP Status Codes
 
 import app.service as service
-# from unittest.mock import MagicMock, patch
 from app.models import Order, OrderItem, db, OrderStatus
 from .order_factory import OrderFactory
 
@@ -64,35 +65,12 @@ class TestOrderServer(unittest.TestCase):
             orders.append(test_order)
         return orders
 
-    def test_delete_orders(self):
-        """ Delete an order"""
-        test_order = self._create_orders(1)[0]
-        resp = self.app.delete('/orders/{}'.format(test_order.id),
-                               content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(len(resp.data), 0)
-        # make sure they are deleted
-        resp = self.app.get('/orders/{}'.format(test_order.id),
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
     def test_index(self):
         """ Test the Home Page """
         resp = self.app.get('/')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(data['name'], 'Orders REST API Service')
-
-    def test_cancel_order(self):
-        """ Cancel a single Order """
-        test_order = self._create_orders(1)[0]
-        resp = self.app.put('/orders/{}/cancel'.format(test_order.id),
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        cancelled_order = resp.get_json()
-        self.assertEqual(cancelled_order['status'], OrderStatus.CANCELED)
-
-    # TODO add rest of tests here
 
     def test_get_order(self):
         """ Get a single order """
@@ -111,7 +89,7 @@ class TestOrderServer(unittest.TestCase):
 
     def test_create_order(self):
         """ Create a new Order """
-        test_order_item = OrderItem(product_id=1, name="Test Item", quantity=10, price=69.00)
+        test_order_item = OrderItem(product_id=1, name='Test Item', quantity=10, price=69.00)
         test_order = Order(customer_id=1, status=OrderStatus.RECEIVED, order_items=[test_order_item])
         resp = self.app.post('/orders',
                              json=test_order.serialize(),
@@ -119,9 +97,8 @@ class TestOrderServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         # Make sure location header is set
 
-        # TODO: Add this test back in once LIST is created
-        # location = resp.headers.get('Location', None)
-        # self.assertTrue(location != None)
+        location = resp.headers.get('Location', None)
+        self.assertTrue(location is not None)
 
         # Check the data is correct
         new_order = resp.get_json()
@@ -132,13 +109,13 @@ class TestOrderServer(unittest.TestCase):
                          "Quantity does not match")
 
         # Check that the location header was correct
-        # resp = self.app.get(location,
-        #                    content_type='application/json')
-        # self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        # new_order = resp.get_json()
-        # self.assertEqual(new_pet['name'], test_pet.name, "Names do not match")
-        # self.assertEqual(new_pet['category'], test_pet.category, "Categories do not match")
-        # self.assertEqual(new_pet['available'], test_pet.available, "Availability does not match")
+        resp = self.app.get(location,
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_order = resp.get_json()
+        self.assertEqual(new_order['status'], test_order.status, "Status do not match")
+        self.assertEqual(new_order['customer_id'], test_order.customer_id, "Customer Id does not match")
+        self.assertEqual(len(new_order['order_items']), len(test_order.order_items.all()), "Order items don't match")
 
     def test_update_order(self):
         """ Update an existing Order """
@@ -157,7 +134,28 @@ class TestOrderServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_order = resp.get_json()
+        print(updated_order)
         self.assertEqual(updated_order['status'], OrderStatus.SHIPPED)
+
+    def test_update_order_not_found(self):
+        """ Update an order that is not found """
+        test_order = OrderFactory()
+        resp = self.app.put('/orders/0',
+                            json=test_order.serialize(),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_order(self):
+        """ Delete an order"""
+        test_order = self._create_orders(1)[0]
+        resp = self.app.delete('/orders/{}'.format(test_order.id),
+                               content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get('/orders/{}'.format(test_order.id),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_order_list(self):
         """ Get a list of Orders """
@@ -181,6 +179,51 @@ class TestOrderServer(unittest.TestCase):
         for order in data:
             self.assertEqual(order['status'], test_status)
 
+    def test_query_order_list_by_since_date(self):
+        """ Query Orders by Order Since a Date """
+        self._create_orders(5)
+
+        # add old order
+        test_order = OrderFactory()
+        test_order.order_date = date.today() - timedelta(days=300)
+        resp = self.app.post('/orders',
+                             json=test_order.serialize(),
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create old test order')
+
+        resp = self.app.get('/orders')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+
+        orders_since = date.today() - timedelta(days=30)
+        resp = self.app.get('/orders',
+                            query_string='orders_since={}'.format(orders_since.strftime('%Y-%m-%d')))
+
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+
+    def test_cancel_order(self):
+        """ Cancel a single Order """
+        test_order = self._create_orders(1)[0]
+        resp = self.app.put('/orders/{}/cancel'.format(test_order.id),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        cancelled_order = resp.get_json()
+        self.assertEqual(cancelled_order['status'], OrderStatus.CANCELED)
+
+    def test_cancel_non_existing_order(self):
+        """ Cancel an order that doesn't exist """
+        resp = self.app.put('/orders/0/cancel', content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_invalid_content_type(self):
+        test_order_item = OrderItem(product_id=1, name="Test Item", quantity=10, price=69.00)
+        test_order = Order(customer_id=1, status=OrderStatus.RECEIVED, order_items=[test_order_item])
+        resp = self.app.post('/orders',
+                             json=test_order.serialize(),
+                             content_type='application/xml')
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
     def test_bad_request(self):
         """ Test a Bad Request by posting invalid Order json """
         # bad order with no customer id
@@ -195,6 +238,13 @@ class TestOrderServer(unittest.TestCase):
         """ Test a sending invalid http method """
         resp = self.app.post('/orders/1')
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @patch('app.service.Order.all')
+    def test_unexpected_error(self, bad_request_mock):
+        """ Test an unexpected error from Find All """
+        bad_request_mock.side_effect = KeyError
+        resp = self.app.get('/orders')
+        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 ######################################################################
