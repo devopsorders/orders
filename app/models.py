@@ -150,6 +150,14 @@ class Order(db.Model):
         cls.logger.info('Processing lookup for orders since %s ...', order_date_since)
         return cls.query.filter(cls.order_date >= order_date_since).all()
 
+    @classmethod
+    def find_by_status(cls, status):
+        """ Returns all of the Orders with a status
+        Args:
+            status (string): the status of the Orders you want to match
+        """
+        cls.logger.info('Processing status query for %s ...', status)
+        return cls.query.filter(cls.status == status)
 
 class OrderItem(db.Model):
     """
