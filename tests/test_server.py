@@ -167,6 +167,20 @@ class TestOrderServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), 5)
 
+    def test_query_order_list_by_status(self):
+        """ Query Orders by Order Status """
+        orders = self._create_orders(10)
+        test_status = orders[0].status
+        status_orders = [order for order in orders if order.status == test_status]
+        resp = self.app.get('/orders',
+                            query_string='status={}'.format(test_status))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(status_orders))
+        # check the data just to be sure
+        for order in data:
+            self.assertEqual(order['status'], test_status)
+
     def test_bad_request(self):
         """ Test a Bad Request by posting invalid Order json """
         # bad order with no customer id
