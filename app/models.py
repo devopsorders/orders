@@ -25,6 +25,7 @@ price (float) - price of the product at the time of this order item
 """
 import logging
 
+import dateutil.parser
 from flask_sqlalchemy import SQLAlchemy
 
 # Create the SQLAlchemy object to be initialized later in init_db()
@@ -81,7 +82,7 @@ class Order(db.Model):
         """ Serializes an Order into a dictionary """
         return {"id": self.id,
                 "customer_id": self.customer_id,
-                "order_date": self.order_date,
+                "order_date": self.order_date.isoformat() if self.order_date else self.order_date,
                 "status": self.status,
                 "order_items": [order_item.serialize() for order_item in self.order_items]}
 
@@ -94,6 +95,8 @@ class Order(db.Model):
         try:
             self.customer_id = data['customer_id']
             self.status = data['status']
+            if 'order_date' in data and data['order_date']:
+                self.order_date = dateutil.parser.parse(data['order_date'])
             for order_item in data['order_items']:
                 self.order_items.append(OrderItem(product_id=order_item['product_id'],
                                                   name=order_item['name'],
@@ -135,15 +138,13 @@ class Order(db.Model):
         cls.logger.info('Processing lookup for id %s ...', order_id)
         return cls.query.get(order_id)
 
-    @classmethod
-    def find_or_404(cls, order_id):
-        """ Find a order by it's id """
-        cls.logger.info('Processing lookup or 404 for id %s ...', order_id)
-        return cls.query.get_or_404(order_id)
+    # @classmethod
+    # def find_or_404(cls, order_id):
+    #     """ Find a order by it's id """
+    #     cls.logger.info('Processing lookup or 404 for id %s ...', order_id)
+    #     return cls.query.get_or_404(order_id)
 
-    # find by some attribute such as status
-
-    # find by date
+    # find orders since date
     @classmethod
     def find_since(cls, order_date_since):
         """ Finds all orders since a date """
@@ -158,6 +159,7 @@ class Order(db.Model):
         """
         cls.logger.info('Processing status query for %s ...', status)
         return cls.query.filter(cls.status == status)
+
 
 class OrderItem(db.Model):
     """

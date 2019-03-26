@@ -13,6 +13,7 @@ PUT /orders/{id}/cancel - cancel an order
 
 import logging
 import sys
+from datetime import datetime
 
 from flask import jsonify, request, abort, url_for, make_response
 from flask_api import status  # HTTP Status Codes
@@ -21,6 +22,7 @@ from werkzeug.exceptions import NotFound
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from .models import Order, DataValidationError, OrderStatus
+
 
 # Import Flask application
 from . import app
@@ -93,7 +95,7 @@ def index():
     """ Root URL response """
     return jsonify(name='Orders REST API Service',
                    version='1.0',
-                   # paths=url_for('list_orders', _external=True)
+                   paths=url_for('list_orders', _external=True)
                    ), status.HTTP_200_OK
 
 
@@ -104,18 +106,16 @@ def index():
 def list_orders():
     """ Returns all of the Orders """
     app.logger.info('Request for order list')
-    orders = []
     order_status = request.args.get('status')
-    # order_date = request.args.get('order_date')
-    # TODO implement querying later
+    orders_since = request.args.get('orders_since')
+
     if order_status:
         orders = Order.find_by_status(order_status)
-    # elif order_date:
-    #     orders = Orders.find_by_order_date(order_date)
+    elif orders_since:
+        orders_since_date = datetime.strptime(orders_since, '%Y-%m-%d').date()
+        orders = Order.find_since(orders_since_date)
     else:
         orders = Order.all()
-
-    # orders = Order.all()
 
     results = [order.serialize() for order in orders]
     return make_response(jsonify(results), status.HTTP_200_OK)
@@ -152,21 +152,18 @@ def create_orders():
     order.deserialize(request.get_json())
     order.save()
     message = order.serialize()
-    # location_url = url_for('get_orders', order_id=order.id, _external=True)
-
-    # TODO: Uncomment this once LIST is implemented
-
-    return make_response(jsonify(message), status.HTTP_201_CREATED)
-    #                     {
-    #                         'Location': location_url
-    #                     })
+    location_url = url_for('get_orders', order_id=order.id, _external=True)
+    return make_response(jsonify(message), status.HTTP_201_CREATED,
+                         {
+                             'Location': location_url
+                         })
 
 
 ######################################################################
 # UPDATE AN EXISTING ORDER
 ######################################################################
 @app.route('/orders/<int:order_id>', methods=['PUT'])
-def update_order(order_id):
+def update_orders(order_id):
     """
     Update an Order
     This endpoint will update a Order based the body that is posted
@@ -180,6 +177,7 @@ def update_order(order_id):
     order.id = order_id
     order.save()
     return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 # DELETE AN ORDER
@@ -196,17 +194,17 @@ def delete_orders(order_id):
         order.delete()
     return make_response('', status.HTTP_204_NO_CONTENT)
 
+
 ######################################################################
 # CANCEL AN ORDER
 ######################################################################
 @app.route('/orders/<int:order_id>/cancel', methods=['PUT'])
-def cancel_order(order_id):
+def cancel_orders(order_id):
     """
     Cancel an order
     This endpoint will cancel an order and notify any other systems
     """
     app.logger.info('Request to cancel order with id: %s', order_id)
-    check_content_type('application/json')
     order = Order.find(order_id)
     if not order:
         raise NotFound("Order with id '{}' was not found.".format(order_id))
