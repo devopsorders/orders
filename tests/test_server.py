@@ -10,7 +10,7 @@ import json
 import logging
 import os
 import unittest
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from unittest.mock import patch
 
 from flask_api import status  # HTTP Status Codes
@@ -134,7 +134,6 @@ class TestOrderServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_order = resp.get_json()
-        print(updated_order)
         self.assertEqual(updated_order['status'], OrderStatus.SHIPPED)
 
     def test_update_order_not_found(self):
@@ -185,7 +184,7 @@ class TestOrderServer(unittest.TestCase):
 
         # add old order
         test_order = OrderFactory()
-        test_order.order_date = date.today() - timedelta(days=300)
+        test_order.order_date = datetime.today() - timedelta(days=300)
         resp = self.app.post('/orders',
                              json=test_order.serialize(),
                              content_type='application/json')
@@ -193,7 +192,6 @@ class TestOrderServer(unittest.TestCase):
 
         resp = self.app.get('/orders')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
 
         orders_since = date.today() - timedelta(days=30)
         resp = self.app.get('/orders',

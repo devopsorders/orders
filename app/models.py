@@ -24,8 +24,8 @@ quantity (integer) - quantity of the product for this order item
 price (float) - price of the product at the time of this order item
 """
 import logging
-from datetime import datetime
 
+import dateutil.parser
 from flask_sqlalchemy import SQLAlchemy
 
 # Create the SQLAlchemy object to be initialized later in init_db()
@@ -96,7 +96,7 @@ class Order(db.Model):
             self.customer_id = data['customer_id']
             self.status = data['status']
             if 'order_date' in data and data['order_date']:
-                self.order_date = datetime.fromisoformat(data['order_date'])
+                self.order_date = dateutil.parser.parse(data['order_date'])
             for order_item in data['order_items']:
                 self.order_items.append(OrderItem(product_id=order_item['product_id'],
                                                   name=order_item['name'],
