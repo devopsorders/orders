@@ -27,9 +27,6 @@ Then all you have to do is clone this repo and invoke vagrant:
 
 You can now run `pytest` to run the tests. As developers we always want to run the tests before we change any code so that we know if we brike the code or perhaps someone before us did? Always run the test cases first!
 
-## Environment
-Copy the .sample-env to .env (which is ignored by git) and replace with real values to run locally
-
 ## Manually running the Tests
 
 Run the tests using `pytest`

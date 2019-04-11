@@ -63,4 +63,15 @@ Vagrant.configure(2) do |config|
     pip3 install -r requirements.txt
   SHELL
 
+  ######################################################################
+  # Create .env file
+  ######################################################################
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "Creating /vagrant/.env"
+    rm -rf /vagrant/.env
+    touch /vagrant/.env
+    chown vagrant:vagrant /vagrant/.env
+    echo "DB_HOST = localhost \nDB_NAME = flaskrestorders \nDB_USER = flaskrestorders  \nDB_PASSWORD = flaskrestorders\n" >/vagrant/.env
+  SHELL
+
 end
