@@ -2,8 +2,25 @@ language: python
 python:
   - '3.6'
 
+services:
+  - postgresql
+
+env:
+  global:
+    - DB_HOST=127.0.0.1
+    - DB_NAME=flaskrestorders
+    - DB_USER=postgres
+    - DB_PASSWORD=
+
 # command to install dependencies
 install: "pip install -r requirements.txt"
 
+before_script:
+  - psql -c 'create database flaskrestorders;' -U postgres
+
 # command to run tests
-script: pytest
+script:
+  - pytest
+
+after_success:
+ - codecov

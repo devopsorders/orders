@@ -23,7 +23,10 @@ ROOT_DIR = os.path.dirname(BASE_DIR)  # up one more directory
 env = Env()
 
 # read env file if it exists
-env.read_env(os.path.join(ROOT_DIR, '.env'))
+try:
+    env.read_env(os.path.join(ROOT_DIR, '.env'))
+except OSError:
+    pass
 
 DB_HOST = env('DB_HOST')
 DB_NAME = env('DB_NAME')
