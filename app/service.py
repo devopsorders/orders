@@ -223,7 +223,7 @@ def cancel_orders(order_id):
 
 def init_db():
     """ Initializes the SQLAlchemy app """
-    global app
+    # global app
     Order.init_db(app)
 
 

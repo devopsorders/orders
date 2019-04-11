@@ -1,0 +1,6 @@
+DEBUG=false
+SECRET_KEY="foobar"
+DB_HOST=localhost
+DB_NAME=orders
+DB_USER=username
+DB_PASSWORD=something
