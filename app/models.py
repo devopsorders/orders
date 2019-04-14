@@ -160,6 +160,11 @@ class Order(db.Model):
         cls.logger.info('Processing status query for %s ...', status)
         return cls.query.filter(cls.status == status)
 
+    @classmethod
+    def delete_all(cls):
+        cls.query.delete()
+        db.session.commit()
+
 
 class OrderItem(db.Model):
     """
