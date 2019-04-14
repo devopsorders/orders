@@ -165,6 +165,7 @@ class Order(db.Model):
         cls.query.delete()
         db.session.commit()
 
+
 class OrderItem(db.Model):
     """
     Class that represents an Order Item
