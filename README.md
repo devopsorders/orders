@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/devopsorders/orders.svg?branch=master)](https://travis-ci.org/devopsorders/orders)
+[![codecov](https://codecov.io/gh/devopsorders/orders/branch/master/graph/badge.svg)](https://codecov.io/gh/devopsorders/orders)
 
 # Orders Microservice
 Orders Microservice for DevOps and Agile Methodologies Stern MBA Class
