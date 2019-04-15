@@ -82,12 +82,11 @@ Vagrant.configure(2) do |config|
    ######################################################################
    # install local postgres through docker image
    ######################################################################
-
-    config.vm.provision "docker" do |d|
-        d.pull_images "postgres:11-alpine"
-        d.run "postgres:11-alpine",
-           args: "--restart=always -d --name psql -h psql -p 5432:5432 -v /var/docker/postgresql:/data -e POSTGRES_PASSWORD=flaskrestorders -e POSTGRES_USER=flaskrestorders -e POSTGRES_DB=flaskrestorders"
-    end
+   config.vm.provision "docker" do |d|
+     d.pull_images "postgres:11-alpine"
+     d.run "postgres:11-alpine",
+       args: "--restart=always -d --name psql -h psql -p 5432:5432 -v /var/docker/postgresql:/data -e POSTGRES_PASSWORD=flaskrestorders -e POSTGRES_USER=flaskrestorders -e POSTGRES_DB=flaskrestorders"
+   end
 
   ######################################################################
   # Setup a Bluemix and Kubernetes environment
