@@ -8,7 +8,6 @@ Test cases can be run with the following:
 
 import json
 import logging
-import os
 import unittest
 from datetime import datetime, date, timedelta
 from unittest.mock import patch
@@ -18,8 +17,6 @@ from flask_api import status  # HTTP Status Codes
 import app.service as service
 from app.models import Order, OrderItem, db, OrderStatus
 from .order_factory import OrderFactory
-
-DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 
 
 ######################################################################
@@ -34,7 +31,7 @@ class TestOrderServer(unittest.TestCase):
         service.app.debug = False
         service.initialize_logging(logging.INFO)
         # Set up the test database
-        service.app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+        # service.app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 
     @classmethod
     def tearDownClass(cls):
