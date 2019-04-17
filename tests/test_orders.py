@@ -5,14 +5,11 @@ Test cases can be run with:
   coverage report -m
 """
 
-import os
 import unittest
 from datetime import datetime, date, timedelta
 
 from app import app
 from app.models import Order, OrderItem, OrderStatus, DataValidationError, db
-
-DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 
 
 ######################################################################
@@ -26,7 +23,7 @@ class TestOrders(unittest.TestCase):
         """ These run once per Test suite """
         app.debug = False
         # Set up the test database
-        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+        # app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 
     @classmethod
     def tearDownClass(cls):

@@ -174,7 +174,7 @@ class OrderItem(db.Model):
     """
 
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id', ondelete='CASCADE'), nullable=False)
     # order = db.relationship('Order', back_populates='order_items')  # TODO this doesn't work right now
     product_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(63), nullable=False)
