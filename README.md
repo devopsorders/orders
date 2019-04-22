@@ -48,6 +48,27 @@ It's also a good idea to make sure that your Python code follows the PEP8 standa
 
 I've also include `pylint` in the requirements. If you use a programmer's editor like Atom.io you can install plug-ins that will use `pylint` while you are editing. This catches a lot of errors while you code that would normally be caught at runtime. It's a good idea to always code with pylint active.
 
+
+BDD tests require the service to be running because unlike the the TDD unit tests that test the code locally, these BDD integration tests are using Selenium to manipulate a web page on a running server.
+
+Run the tests using `behave`
+
+```shell
+    $ python run.py &
+    $ behave
+```
+
+Note that the `&` runs the server in the background. To stop the server, you must bring it to the foreground and then press `Ctrl+C`
+
+Stop the server with
+
+```shell
+    $ fg
+    $ <ctrl+c>
+```
+
+Alternately you can run the server in another `shell` by opening another terminal window and using `vagrant ssh` to establish a second connection to the VM.
+
 When you are done, you can exit and shut down the vm with:
 
     $ exit
