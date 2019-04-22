@@ -17,10 +17,13 @@ install: "pip install -r requirements.txt"
 
 before_script:
   - psql -c 'create database flaskrestorders;' -U postgres
+  - python run.py &  # start a Web server in the background
+  - sleep 3 # give Web server some time to bind to sockets, etc
 
 # command to run tests
 script:
   - pytest
+  - behave
 
 after_success:
  - codecov
