@@ -3,15 +3,11 @@ Order Steps
 Steps file for orders.feature
 """
 import json
-import time
 from os import getenv
 
 import requests
-from behave import *
+from behave import given, when, then
 from compare import expect, ensure
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
 
 WAIT_SECONDS = 20
 BASE_URL = getenv('BASE_URL', 'http://localhost:5000')
