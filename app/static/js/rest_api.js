@@ -8,7 +8,7 @@ $(function () {
     function update_form_data(res) {
         $("#order_id").val(res.order_id);
         $("#customer_id").val(res.customer_id);
-        $("#order_status").val(res.status);
+        $("#order_status").val(res.order_status);
         $("#product_id").val(res.product_id);
     }
 
@@ -35,15 +35,15 @@ $(function () {
     $("#create-btn").click(function () {
 
         var customer_id = $("#customer_id").val();
-        var status = $("#order_status").val();
-        var name = $("#item_name").val();
+        var order_status = $("#order_status").val();
+        var item_name = $("#item_name").val();
         var qty = $("#item_qty").val();
         var price = $("#item_price").val();
         var product_id = $("#product_id").val();
 
         var data = {
             "customer_id": customer_id,
-            "status": status,
+            "status": order_status,
             "order_items": [
               {
                 "product_id": product_id,
