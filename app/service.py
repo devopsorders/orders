@@ -91,7 +91,7 @@ def internal_server_error(error):
 ######################################################################
 # GET INDEX
 ######################################################################
-@app.route('/', methods=['GET'], strict_slashes=False)
+@app.route('/', methods=['GET'])
 def index():
     """ Root URL response """
     return app.send_static_file('index.html')
