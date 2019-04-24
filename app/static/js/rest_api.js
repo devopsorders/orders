@@ -6,10 +6,14 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#order_id").val(res.order_id);
+        $("#order_id").val(res.id);
         $("#customer_id").val(res.customer_id);
-        $("#order_status").val(res.order_status);
-        $("#product_id").val(res.product_id);
+        $("#order_date").val(res.order_date);
+        $("#order_status").val(res.status);
+        $("item_name").val(res.order_items['name']);
+        $("product_id").val(res.order_items['product_id']);
+        $("item_qty").val(res.order_items['quantity']);
+        $("item_price").val(res.order_items['price']);
     }
 
     /// Clears all form fields
@@ -164,6 +168,7 @@ $(function () {
     $("#clear-btn").click(function () {
         $("#order_id").val("");
         $("#customer_id").val("");
+        $("#order_date").val("");
         $("#item_name").val("");
         $("#product_id").val("");
         $("#item_qty").val("");
