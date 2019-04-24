@@ -7,22 +7,22 @@ $(function() {
     // Updates the form with data from the response
     function update_form_data(res) {
         $("#order_id").val(res.id);
-        $("#customer_id").val(res.customer_id);
+        $("#order_customer_id").val(res.customer_id);
         $("#order_status").val(res.status);
-        $("#product_id").val(res.order_items[0].product_id);
-        $("#item_name").val(res.order_items[0].name);
-        $("#item_qty").val(res.order_items[0].quantity);
-        $("#item_price").val(res.order_items[0].price);
+        $("#order_product_id").val(res.order_items[0].product_id);
+        $("#order_name").val(res.order_items[0].name);
+        $("#order_quantity").val(res.order_items[0].quantity);
+        $("#order_price").val(res.order_items[0].price);
     }
 
     /// Clears all form fields
     function clear_form_data() {
         $("#order_id").val("");
-        $("#customer_id").val("");
-        $("#product_id").val("");
-        $("#item_name").val("");
-        $("#item_qty").val("");
-        $("#item_price").val("");
+        $("#order_customer_id").val("");
+        $("#order_product_id").val("");
+        $("#order_name").val("");
+        $("#order_quantity").val("");
+        $("#order_price").val("");
         $("#order_status").val("received");
     }
 
@@ -37,11 +37,11 @@ $(function() {
     // ****************************************
 
     $("#create-btn").click(function() {
-        var customer_id = $("#customer_id").val();
-        var product_id = $("#product_id").val();
-        var item_name = $("#item_name").val();
-        var qty = $("#item_qty").val();
-        var price = $("#item_price").val();
+        var customer_id = $("#order_customer_id").val();
+        var product_id = $("#order_product_id").val();
+        var item_name = $("#order_name").val();
+        var qty = $("#order_quantity").val();
+        var price = $("#order_price").val();
         var order_status = $("#order_status").val();
 
         var data = {
@@ -63,12 +63,12 @@ $(function() {
         });
 
         ajax.done(function(res) {
-            update_form_data(res)
-            flash_message("Success")
+            update_form_data(res);
+            flash_message("Success");
         });
 
         ajax.fail(function(res) {
-            flash_message(res.responseJSON.message)
+            flash_message(res.responseJSON.message);
         });
     });
 
@@ -83,11 +83,11 @@ $(function() {
             flash_message("Order ID is required to update!");
             return;
         }
-        var customer_id = $("#customer_id").val();
-        var product_id = $("#product_id").val();
-        var item_name = $("#item_name").val();
-        var qty = $("#item_qty").val();
-        var price = $("#item_price").val();
+        var customer_id = $("#order_customer_id").val();
+        var product_id = $("#order_product_id").val();
+        var item_name = $("#order_name").val();
+        var qty = $("#order_quantity").val();
+        var price = $("#order_price").val();
         var order_status = $("#order_status").val();
 
         var data = {
@@ -109,12 +109,12 @@ $(function() {
         })
 
         ajax.done(function(res) {
-            update_form_data(res)
-            flash_message("Success")
+            update_form_data(res);
+            flash_message("Success");
         });
 
         ajax.fail(function(res) {
-            flash_message(res.responseJSON.message)
+            flash_message(res.responseJSON.message);
         });
 
     });
@@ -135,13 +135,13 @@ $(function() {
 
         ajax.done(function(res) {
             //alert(res.toSource())
-            update_form_data(res)
-            flash_message("Success")
+            update_form_data(res);
+            flash_message("Success");
         });
 
         ajax.fail(function(res) {
             clear_form_data()
-            flash_message(res.responseJSON.message)
+            flash_message(res.responseJSON.message);
         });
 
     });
@@ -161,12 +161,12 @@ $(function() {
         })
 
         ajax.done(function(res) {
-            clear_form_data()
-            flash_message("Order ID [" + res.order_id + "] has been deleted!")
+            flash_message("Success");
         });
 
         ajax.fail(function(res) {
-            flash_message("Server error!")
+            clear_form_data();
+            flash_message(res.responseJSON.message);
         });
     });
 
