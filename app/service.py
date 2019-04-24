@@ -180,6 +180,9 @@ def update_orders(order_id):
     order = Order.find(order_id)
     if not order:
         raise NotFound("Order with id '{}' was not found.".format(order_id))
+    # this is a bit of a hack, but since full order is posted, delete order items so not duplicated
+    order.order_items.delete()
+    # now deserialize json
     order.deserialize(request.get_json())
     order.id = order_id
     order.save()

@@ -8,22 +8,22 @@ $(function() {
     function update_form_data(res) {
         $("#order_id").val(res.id);
         $("#customer_id").val(res.customer_id);
-        $("#order_date").val(res.order_date);
         $("#order_status").val(res.status);
-        $("item_name").val(res.order_items['name']);
-        $("product_id").val(res.order_items['product_id']);
-        $("item_qty").val(res.order_items['quantity']);
-        $("item_price").val(res.order_items['price']);
+        $("#product_id").val(res.order_items[0].product_id);
+        $("#item_name").val(res.order_items[0].name);
+        $("#item_qty").val(res.order_items[0].quantity);
+        $("#item_price").val(res.order_items[0].price);
     }
 
     /// Clears all form fields
     function clear_form_data() {
         $("#order_id").val("");
         $("#customer_id").val("");
-        $("#item_name").val("");
         $("#product_id").val("");
+        $("#item_name").val("");
         $("#item_qty").val("");
         $("#item_price").val("");
+        $("#order_status").val("received");
     }
 
     // Updates the flash message area
@@ -37,13 +37,12 @@ $(function() {
     // ****************************************
 
     $("#create-btn").click(function() {
-
         var customer_id = $("#customer_id").val();
-        var order_status = $("#order_status").val();
+        var product_id = $("#product_id").val();
         var item_name = $("#item_name").val();
         var qty = $("#item_qty").val();
         var price = $("#item_price").val();
-        var product_id = $("#product_id").val();
+        var order_status = $("#order_status").val();
 
         var data = {
             "customer_id": customer_id,
@@ -75,17 +74,31 @@ $(function() {
 
 
     // ****************************************
-    // Update order status
+    // Update an order
     // ****************************************
 
     $("#update-btn").click(function() {
-
         var order_id = $("#order_id").val();
-        var status = $("#order_status").val();
+        if (order_id === "") {
+            flash_message("Order ID is required to update!");
+            return;
+        }
+        var customer_id = $("#customer_id").val();
+        var product_id = $("#product_id").val();
+        var item_name = $("#item_name").val();
+        var qty = $("#item_qty").val();
+        var price = $("#item_price").val();
+        var order_status = $("#order_status").val();
 
         var data = {
-            "status": status,
-            "order_id": order_id
+            "customer_id": customer_id,
+            "status": order_status,
+            "order_items": [{
+                "product_id": product_id,
+                "name": item_name,
+                "quantity": qty,
+                "price": price
+            }]
         };
 
         var ajax = $.ajax({
@@ -111,7 +124,6 @@ $(function() {
     // ****************************************
 
     $("#retrieve-btn").click(function() {
-
         var order_id = $("#order_id").val();
 
         var ajax = $.ajax({
@@ -139,7 +151,6 @@ $(function() {
     // ****************************************
 
     $("#delete-btn").click(function() {
-
         var order_id = $("#order_id").val();
 
         var ajax = $.ajax({
@@ -164,13 +175,6 @@ $(function() {
     // ****************************************
 
     $("#clear-btn").click(function() {
-        $("#order_id").val("");
-        $("#customer_id").val("");
-        $("#order_date").val("");
-        $("#item_name").val("");
-        $("#product_id").val("");
-        $("#item_qty").val("");
-        $("#item_price").val("");
         clear_form_data()
     });
 
@@ -179,7 +183,6 @@ $(function() {
     // ****************************************
 
     $("#search-btn").click(function() {
-
         var order_id = $("#order_id").val();
         var customer_id = $("#customer_id").val();
 
