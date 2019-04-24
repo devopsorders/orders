@@ -179,52 +179,47 @@ $(function() {
     });
 
     // ****************************************
-    // Search for an order
+    // Search for orders by status
     // ****************************************
 
+
     $("#search-btn").click(function() {
-        var order_id = $("#order_id").val();
-        var customer_id = $("#customer_id").val();
+        var order_status = $("#order_status").val();
 
-        var queryString = ""
-
-        if (status) {
-            queryString += 'status=' + status
-        }
-        if (category) {
-            if (queryString.length > 0) {
-                queryString += '&category=' + category
-            } else {
-                queryString += 'category=' + category
-            }
-        }
-        if (available) {
-            if (queryString.length > 0) {
-                queryString += '&available=' + available
-            } else {
-                queryString += 'available=' + available
-            }
-        }
+        var query_params = {
+            "status": order_status
+        };
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/orders?" + queryString,
+            url: "/orders?" + $.param(query_params),
             contentType: "application/json",
             data: ''
-        })
+        });
 
         ajax.done(function(res) {
             //alert(res.toSource())
             $("#search_results").empty();
-            $("#search_results").append('<table class="table-striped">');
+            $("#search_results").append('<table class="table-striped"> <thead><tr><th>Orders</th></tr>');
             var header = '<tr>'
-            header += '<th style="width:10%">Order ID</th>'
-            header += '<th style="width:40%">Customer ID</th>'
-            header += '<th style="width:40%">Status</th>'
+            header += '<th style="width:10%">ID</th>';
+            header += '<th style="width:20%">Customer ID</th>';
+            header += '<th style="width:20%">Product ID</th>';
+            header += '<th style="width:20%">Name</th>';
+            header += '<th style="width:13%">Quantity</th>';
+            header += '<th style="width:10%">Price</th>';
+            header += '<th style="width:10%">Status</th></tr>';
             $("#search_results").append(header);
             for (var i = 0; i < res.length; i++) {
                 var order = res[i];
-                var row = "<tr><td>" + order.order_id + "</td><td>" + order.customer_id + "</td><td>" + order.status + "</td>";
+                var row = "<tr><td>" +
+                    order.id + "</td><td>" +
+                    order.customer_id + "</td><td>" +
+                    order.order_items[0].product_id + "</td><td>" +
+                    order.order_items[0].name + "</td><td>" +
+                    order.order_items[0].quantity + "</td><td>" +
+                    order.order_items[0].price + "</td><td>" +
+                    order.status + "</td></tr>";
                 $("#search_results").append(row);
             }
 
@@ -234,9 +229,8 @@ $(function() {
         });
 
         ajax.fail(function(res) {
-            flash_message(res.responseJSON.message)
+            flash_message(res.responseJSON.message);
         });
-
     });
 
-})
+});
