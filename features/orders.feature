@@ -8,7 +8,7 @@ Feature: The order store service back-end
       | customer_id | product_id | name         | quantity | price | status   |
       | 1           | 1          | protein bars | 2        | 18.25 | received |
       | 2           | 2          | airpods      | 1        | 199   | received |
-      | 3           | 3          | notebook     | 1        | 5.49  | received |
+      | 3           | 3          | notebook     | 1        | 5.49  | shipped |
 
   Scenario: The server is running
     When I visit the "Home Page"

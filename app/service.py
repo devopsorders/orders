@@ -23,10 +23,11 @@ from werkzeug.exceptions import NotFound
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from .models import Order, DataValidationError, OrderStatus
 
-
 # Import Flask application
 from . import app
 
+# kind of hacky, but now all urls will work
+app.url_map.strict_slashes = False
 
 ######################################################################
 # Error Handlers
@@ -90,13 +91,19 @@ def internal_server_error(error):
 ######################################################################
 # GET INDEX
 ######################################################################
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     """ Root URL response """
-    return jsonify(name='Orders REST API Service',
-                   version='1.0',
-                   paths=url_for('list_orders', _external=True)
-                   ), status.HTTP_200_OK
+    return app.send_static_file('index.html')
+
+
+# @app.route('/')
+# def index():
+#     """ Root URL response """
+#     return jsonify(name='Orders REST API Service',
+#                    version='1.0',
+#                    paths=url_for('list_orders', _external=True)
+#                    ), status.HTTP_200_OK
 
 
 ######################################################################
@@ -173,6 +180,9 @@ def update_orders(order_id):
     order = Order.find(order_id)
     if not order:
         raise NotFound("Order with id '{}' was not found.".format(order_id))
+    # this is a bit of a hack, but since full order is posted, delete order items so not duplicated
+    order.order_items.delete()
+    # now deserialize json
     order.deserialize(request.get_json())
     order.id = order_id
     order.save()
