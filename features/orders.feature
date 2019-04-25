@@ -36,7 +36,7 @@ Feature: The order store service back-end
     When I visit the "Home Page"
     And I set the "ID" to "4"
     And I press the "delete" order button
-    Then I should see the message "Success"
+    Then I should see the message "Order Deleted!"
 
 
 #Scenario: Cancel an order
