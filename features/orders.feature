@@ -8,13 +8,12 @@ Feature: The order store service back-end
       | customer_id | product_id | name         | quantity | price | status   |
       | 1           | 1          | protein bars | 2        | 18.25 | received |
       | 2           | 2          | airpods      | 1        | 199   | received |
-      | 3           | 3          | notebook     | 1        | 5.49  | shipped |
+      | 3           | 3          | notebook     | 1        | 5.49  | shipped  |
+      | 3           | 4          | shirt        | 1        | 23.50 | received |
 
   Scenario: The server is running
     When I visit the "Home Page"
-    Then I should see "" in the title
-    # TODO update to below line once UI is implemented
-    # Then I should see "Orders REST API Service" in the title
+    Then I should see "Order RESTful Service" in the title
     And I should not see "404 Not Found"
 
 
@@ -33,7 +32,11 @@ Feature: The order store service back-end
 #Scenario: Read an order
 
 
-#Scenario: Delete an Order
+  Scenario: Delete an Order
+    When I visit the "Home Page"
+    And I set the "ID" to "4"
+    And I press the "delete" order button
+    Then I should see the message "Order Deleted!"
 
 
 #Scenario: Cancel an order
