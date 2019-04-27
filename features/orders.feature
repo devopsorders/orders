@@ -16,14 +16,18 @@ Feature: The order store service back-end
     Then I should see "Order RESTful Service" in the title
     And I should not see "404 Not Found"
 
-
-#Scenario: Create an order
-
-
-#Scenario: List all orders
-
+  Scenario: List all orders
+    When I visit the "Home Page"
+    And I press the "retrieve" order button
+    Then I should see "protein bars" in the results
+    And I should see "airpods" in the results
+    And I should see "notebook" in the results
+    And I should see "shirt" in the results
 
 #Scenario: List certain orders
+
+
+#Scenario: Create an order
 
 
 #Scenario: Update an order
