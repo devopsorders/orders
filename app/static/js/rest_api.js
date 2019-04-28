@@ -204,9 +204,55 @@ $(function() {
     });
 
     // ****************************************
-    // Search for orders by status
+    // List all orders
     // ****************************************
 
+    $("#list-btn").click(function() {
+        var ajax = $.ajax({
+            type: "GET",
+            url: "/orders",
+            contentType: "application/json",
+            data: ''
+        });
+
+        ajax.done(function(res) {
+            $("#search_results").empty();
+            $("#search_results").append('<table class="table-striped"> <thead><tr><th>Orders</th></tr>');
+            var header = '<tr>'
+            header += '<th style="width:10%">ID</th>';
+            header += '<th style="width:20%">Customer ID</th>';
+            header += '<th style="width:20%">Product ID</th>';
+            header += '<th style="width:20%">Name</th>';
+            header += '<th style="width:13%">Quantity</th>';
+            header += '<th style="width:10%">Price</th>';
+            header += '<th style="width:10%">Status</th></tr>';
+            $("#search_results").append(header);
+            for (var i = 0; i < res.length; i++) {
+                var order = res[i];
+                var row = "<tr><td>" +
+                    order.id + "</td><td>" +
+                    order.customer_id + "</td><td>" +
+                    order.order_items[0].product_id + "</td><td>" +
+                    order.order_items[0].name + "</td><td>" +
+                    order.order_items[0].quantity + "</td><td>" +
+                    order.order_items[0].price + "</td><td>" +
+                    order.status + "</td></tr>";
+                $("#search_results").append(row);
+            }
+
+            $("#search_results").append('</table>');
+
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res) {
+            flash_message(res.responseJSON.message);
+        });
+    });
+
+    // ****************************************
+    // Search for orders by status
+    // ****************************************
 
     $("#search-btn").click(function() {
         var order_status = $("#order_status").val();
@@ -223,7 +269,6 @@ $(function() {
         });
 
         ajax.done(function(res) {
-            //alert(res.toSource())
             $("#search_results").empty();
             $("#search_results").append('<table class="table-striped"> <thead><tr><th>Orders</th></tr>');
             var header = '<tr>'
