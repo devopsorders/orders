@@ -15,7 +15,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 WAIT_SECONDS = 20
 BASE_URL = getenv('BASE_URL', 'http://localhost:5000')
-print(BASE_URL)
 
 
 @given(u'the following orders')
@@ -73,6 +72,18 @@ def step_impl(context, message):
         expected_conditions.text_to_be_present_in_element(
             (By.ID, 'flash_message'),
             message
+        )
+    )
+    expect(found).to_be(True)
+
+
+@then(u'I should see "{text_string}" in the "{element_name}" field')
+def step_impl(context, text_string, element_name):
+    element_id = 'order_' + element_name.lower()
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element_value(
+            (By.ID, element_id),
+            text_string
         )
     )
     expect(found).to_be(True)
