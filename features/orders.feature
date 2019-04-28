@@ -39,4 +39,9 @@ Feature: The order store service back-end
     Then I should see the message "Order Deleted!"
 
 
-#Scenario: Cancel an order
+  Scenario: Cancel an Order
+    When I visit the "Home Page"
+    And I set the "ID" to "1"
+    And I press the "cancel" order button
+    Then I should see the message "Order Canceled!"
+    Then I should see "canceled" in the "Status" field
