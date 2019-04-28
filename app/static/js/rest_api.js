@@ -242,7 +242,7 @@ $(function() {
 
             $("#search_results").append('</table>');
 
-            flash_message("Success")
+            flash_message("Success");
         });
 
         ajax.fail(function(res) {
@@ -295,7 +295,7 @@ $(function() {
 
             $("#search_results").append('</table>');
 
-            flash_message("Success")
+            flash_message("Success");
         });
 
         ajax.fail(function(res) {
