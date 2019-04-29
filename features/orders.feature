@@ -25,6 +25,13 @@ Feature: The order store service back-end
     And I should see "shirt" in the results
     Then I should see the message "Success"
 
+  Scenario: List all shipped orders
+    When I visit the "Home Page"
+    And I select "shipped" in the "Status" field
+    And I press the "search" order button
+    Then I should see the message "Success"
+    Then I should see "notebook" in the results
+
   Scenario: Create an order
     When I visit the "Home Page"
     And I set the "customer_id" to "1"
@@ -65,16 +72,9 @@ Feature: The order store service back-end
     And I press the "delete" order button
     Then I should see the message "Order Deleted!"
 
-
   Scenario: Cancel an Order
     When I visit the "Home Page"
     And I set the "ID" to "2"
     And I press the "cancel" order button
     Then I should see the message "Order Canceled!"
     Then I should see "canceled" in the "Status" field
-
-  Scenario: Query an Order
-    When I visit the "Home Page"
-    And I set the "status" to "shipped"
-    And I press the "search" order button
-    Then I should see "notebook" in the results
