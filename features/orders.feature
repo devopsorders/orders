@@ -38,7 +38,7 @@ Feature: The order store service back-end
     Then I should see "protein bars" in the "name" field
     Then I should see "2" in the "quantity" field
     Then I should see "18.25" in the "price" field
-    Then I should see "canceled" in the "status" field
+    Then I should see "received" in the "status" field
 
   Scenario: Delete an Order
     When I visit the "Home Page"
