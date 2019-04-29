@@ -16,6 +16,15 @@ Feature: The order store service back-end
     Then I should see "Order RESTful Service" in the title
     And I should not see "404 Not Found"
 
+  Scenario: List all orders
+    When I visit the "Home Page"
+    And I press the "list" order button
+    Then I should see "protein bars" in the results
+    And I should see "airpods" in the results
+    And I should see "notebook" in the results
+    And I should see "shirt" in the results
+    Then I should see the message "Success"
+
   Scenario: Create an order
     When I visit the "Home Page"
     And I set the "customer_id" to "1"
@@ -27,15 +36,6 @@ Feature: The order store service back-end
     And I press the "Create" order button
     Then I should see the message "Success"
 
-  Scenario: List all orders
-    When I visit the "Home Page"
-    And I press the "list" order button
-    Then I should see "protein bars" in the results
-    And I should see "airpods" in the results
-    And I should see "notebook" in the results
-    And I should see "shirt" in the results
-    Then I should see the message "Success"
-
   Scenario: Update an order
     When I visit the "Home Page"
     And I set the "customer_id" to "1"
@@ -43,7 +43,7 @@ Feature: The order store service back-end
     And I set the "name" to "protein bars"
     And I set the "quantity" to "3"
     And I set the "price" to "18.26"
-    And I set the "status" to "shipped"
+    And I select "shipped" in the "Status" field
     And I press the "Create" order button
     Then I should see the message "Success"
 
@@ -68,7 +68,7 @@ Feature: The order store service back-end
 
   Scenario: Cancel an Order
     When I visit the "Home Page"
-    And I set the "ID" to "1"
+    And I set the "ID" to "2"
     And I press the "cancel" order button
     Then I should see the message "Order Canceled!"
     Then I should see "canceled" in the "Status" field
