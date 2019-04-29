@@ -65,3 +65,9 @@ Feature: The order store service back-end
     And I press the "cancel" order button
     Then I should see the message "Order Canceled!"
     Then I should see "canceled" in the "Status" field
+
+  Scenario: Query an Order
+    When I visit the "Home Page"
+    And I set the "status" to "shipped"
+    And I press the "search" order button
+    Then I should see "notebook" in the "name" field
