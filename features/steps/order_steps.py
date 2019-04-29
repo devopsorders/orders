@@ -88,6 +88,10 @@ def step_impl(context, text_string, element_name):
     )
     expect(found).to_be(True)
 
+@then(u'I should see "{text_string}" in the "{element_name}"')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see "{text_string}" in the "{element_name}"')    
+
 
 ##################################################################
 # This code works because of the following naming convention:
