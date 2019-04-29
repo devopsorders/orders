@@ -29,8 +29,16 @@ Feature: The order store service back-end
 #Scenario: Update an order
 
 
-#Scenario: Read an order
-
+  Scenario: Read an order
+    When I visit the "Home Page"
+    And I set the "ID" to "1"
+    And I press the "retrieve" order button
+    Then I should see "1" in the "customer_id" field
+    Then I should see "1" in the "product_id" field
+    Then I should see "protein bars" in the "name" field
+    Then I should see "2" in the "quantity" field
+    Then I should see "18.25" in the "price" field
+    Then I should see "received" in the "status" field
 
   Scenario: Delete an Order
     When I visit the "Home Page"
