@@ -70,4 +70,4 @@ Feature: The order store service back-end
     When I visit the "Home Page"
     And I set the "status" to "shipped"
     And I press the "search" order button
-    Then I should see "notebook" in the "name" field
+    Then I should see "notebook" in the results
