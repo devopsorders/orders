@@ -16,17 +16,6 @@ Feature: The order store service back-end
     Then I should see "Order RESTful Service" in the title
     And I should not see "404 Not Found"
 
-  Scenario: Create an order
-    When I visit the "Home Page"
-    And I set the "customer_id" to "1"
-    And I set the "product_id" to "1"
-    And I set the "name" to "protein bars"
-    And I set the "quantity" to "2"
-    And I set the "price" to "18.25"
-    And I set the "status" to "received"
-    And I press the "Create" order button
-    Then I should see the message "Success"
-
   Scenario: List all orders
     When I visit the "Home Page"
     And I press the "list" order button
@@ -36,9 +25,34 @@ Feature: The order store service back-end
     And I should see "shirt" in the results
     Then I should see the message "Success"
 
+  Scenario: List all shipped orders
+    When I visit the "Home Page"
+    And I select "shipped" in the "Status" field
+    And I press the "search" order button
+    Then I should see the message "Success"
+    Then I should see "notebook" in the results
 
-#Scenario: Update an order
+  Scenario: Create an order
+    When I visit the "Home Page"
+    And I set the "customer_id" to "1"
+    And I set the "product_id" to "1"
+    And I set the "name" to "protein bars"
+    And I set the "quantity" to "2"
+    And I set the "price" to "18.25"
+    And I select "received" in the "Status" field
+    And I press the "Create" order button
+    Then I should see the message "Success"
 
+  Scenario: Update an order
+    When I visit the "Home Page"
+    And I set the "customer_id" to "1"
+    And I set the "product_id" to "1"
+    And I set the "name" to "protein bars"
+    And I set the "quantity" to "3"
+    And I set the "price" to "18.26"
+    And I select "shipped" in the "Status" field
+    And I press the "Create" order button
+    Then I should see the message "Success"
 
   Scenario: Read an order
     When I visit the "Home Page"
@@ -58,10 +72,9 @@ Feature: The order store service back-end
     And I press the "delete" order button
     Then I should see the message "Order Deleted!"
 
-
   Scenario: Cancel an Order
     When I visit the "Home Page"
-    And I set the "ID" to "1"
+    And I set the "ID" to "2"
     And I press the "cancel" order button
     Then I should see the message "Order Canceled!"
     Then I should see "canceled" in the "Status" field

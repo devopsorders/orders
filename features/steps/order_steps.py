@@ -11,6 +11,7 @@ from behave import given, when, then
 from compare import expect, ensure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
 WAIT_SECONDS = 20
@@ -21,6 +22,8 @@ BASE_URL = getenv('BASE_URL', 'http://localhost:5000')
 def step_impl(context):
     """ Delete all Orders and load new ones """
     headers = {'Content-Type': 'application/json'}
+    # TODO fix resetting
+    # right now removing orders screws up the auto increment count, so can't select by ID later in behave scenarios
     # context.resp = requests.delete(context.base_url + '/orders/reset')
     # expect(context.resp.status_code).to_equal(204)
     create_url = context.base_url + '/orders'
@@ -62,6 +65,7 @@ def step_impl(context, message):
 def step_impl(context, element_name, text_string):
     element_id = 'order_' + element_name.lower()
     element = context.driver.find_element_by_id(element_id)
+    element.clear()
     element.send_keys(text_string)
 
 
@@ -86,6 +90,14 @@ def step_impl(context, text_string, element_name):
         )
     )
     expect(found).to_be(True)
+
+
+@when('I select "{message}" in the "{element_name}" field')
+def step_impl(context, message, element_name):
+    element_id = 'order_' + element_name.lower()
+    element = Select(context.driver.find_element_by_id(element_id))
+    element.select_by_value(message)
+
 
 ##################################################################
 # This code works because of the following naming convention:

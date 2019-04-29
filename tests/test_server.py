@@ -153,6 +153,18 @@ class TestOrderServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_delete_all_orders(self):
+        """ Delete all orders and reset auto increment counter"""
+        self._create_orders(10)
+        resp = self.app.delete('/orders/reset',
+                               content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        # make sure they are deleted
+        resp = self.app.get('/orders',
+                            content_type='application/json')
+        data = resp.get_json()
+        self.assertEqual(len(data), 0)
+
     def test_get_order_list(self):
         """ Get a list of Orders """
         self._create_orders(5)
