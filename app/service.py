@@ -228,6 +228,16 @@ def cancel_orders(order_id):
 
 
 ######################################################################
+# DELETE ALL ORDER DATA (for testing only)
+######################################################################
+@app.route('/orders/reset', methods=['DELETE'])
+def pets_reset():
+    """ Removes all orders from the database """
+    Order.delete_all()
+    return make_response('', status.HTTP_204_NO_CONTENT)
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
