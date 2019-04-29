@@ -32,8 +32,16 @@ Feature: The order store service back-end
 
 #Scenario: List certain orders
 
-
-#Scenario: Update an order
+  Scenario: Update an order
+    When I visit the "Home Page"
+    And I set the "customer_id" to "1"
+    And I set the "product_id" to "1"
+    And I set the "name" to "protein bars"
+    And I set the "quantity" to "3"
+    And I set the "price" to "18.26"
+    And I set the "status" to "shipped"
+    And I press the "Create" order button
+    Then I should see the message "Success"
 
 
   Scenario: Read an order
