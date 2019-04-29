@@ -29,11 +29,12 @@ Feature: The order store service back-end
 
   Scenario: List all orders
     When I visit the "Home Page"
-    And I press the "retrieve" order button
+    And I press the "list" order button
     Then I should see "protein bars" in the results
     And I should see "airpods" in the results
     And I should see "notebook" in the results
     And I should see "shirt" in the results
+    Then I should see the message "Success"
 
 
 #Scenario: Update an order
