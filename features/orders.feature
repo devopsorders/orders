@@ -23,6 +23,7 @@ Feature: The order store service back-end
     And I set the "name" to "protein bars"
     And I set the "quantity" to "2"
     And I set the "price" to "18.25"
+    And I set the "status" to "received"
     And I press the "Create" order button
     Then I should see the message "Success"
 
