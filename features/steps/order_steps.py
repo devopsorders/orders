@@ -62,7 +62,6 @@ def step_impl(context, message):
 def step_impl(context, element_name, text_string):
     element_id = 'order_' + element_name.lower()
     element = context.driver.find_element_by_id(element_id)
-    element.clear()
     element.send_keys(text_string)
 
 
@@ -87,7 +86,6 @@ def step_impl(context, text_string, element_name):
         )
     )
     expect(found).to_be(True)
-
 
 ##################################################################
 # This code works because of the following naming convention:

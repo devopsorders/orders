@@ -16,9 +16,16 @@ Feature: The order store service back-end
     Then I should see "Order RESTful Service" in the title
     And I should not see "404 Not Found"
 
-
-#Scenario: Create an order
-
+  Scenario: Create an order
+    When I visit the "Home Page"
+    And I set the "customer_id" to "1"
+    And I set the "product_id" to "1"
+    And I set the "name" to "protein bars"
+    And I set the "quantity" to "2"
+    And I set the "price" to "18.25"
+    And I set the "status" to "received"
+    And I press the "Create" order button
+    Then I should see the message "Success"
 
 #Scenario: List all orders
 
@@ -39,6 +46,7 @@ Feature: The order store service back-end
     Then I should see "2" in the "quantity" field
     Then I should see "18.25" in the "price" field
     Then I should see "received" in the "status" field
+    Then I should see the message "Success"
 
   Scenario: Delete an Order
     When I visit the "Home Page"
