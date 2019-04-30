@@ -124,14 +124,6 @@ def step_impl(context, button):
     else:
         context.driver.find_element_by_id(button_id).click()
 
-@when(u'I change "{element_name}" to "{text_string}"')
-def step_impl(context, element_name, text_string):
-    raise NotImplementedError(u'STEP: When I change "{element_name}" to "{text_string}"')
-
-@when(u'I press the "Update" button')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I press the "Update" button')
-
 @then('I should see "{name}" in the results')
 def step_impl(context, name):
     found = WebDriverWait(context.driver, WAIT_SECONDS).until(
