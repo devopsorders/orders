@@ -51,6 +51,7 @@ Feature: The order store service back-end
     And I should see "2" in the "quantity" field
     When I set the "quantity" to "3"
     And I press the "update" order button
+    Then I should see "3" in the "quantity" field
     Then I should see the message "Success"
 
   Scenario: Read an order

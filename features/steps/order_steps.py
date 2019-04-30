@@ -124,6 +124,7 @@ def step_impl(context, button):
     else:
         context.driver.find_element_by_id(button_id).click()
 
+
 @then('I should see "{name}" in the results')
 def step_impl(context, name):
     found = WebDriverWait(context.driver, WAIT_SECONDS).until(
