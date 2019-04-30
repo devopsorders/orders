@@ -45,13 +45,13 @@ Feature: The order store service back-end
 
   Scenario: Update an order
     When I visit the "Home Page"
-    And I set the "customer_id" to "1"
-    And I set the "product_id" to "1"
-    And I set the "name" to "protein bars"
-    And I set the "quantity" to "3"
-    And I set the "price" to "18.26"
-    And I select "shipped" in the "Status" field
-    And I press the "Create" order button
+    And I set the "ID" to "1"
+    And I press the "retrieve" order button
+    Then I should see "protein bars" in the "name" field
+    And I should see "2" in the "quantity" field
+    When I set the "quantity" to "3"
+    And I press the "update" order button
+    Then I should see "3" in the "quantity" field
     Then I should see the message "Success"
 
   Scenario: Read an order
@@ -61,7 +61,7 @@ Feature: The order store service back-end
     Then I should see "1" in the "customer_id" field
     Then I should see "1" in the "product_id" field
     Then I should see "protein bars" in the "name" field
-    Then I should see "2" in the "quantity" field
+    Then I should see "3" in the "quantity" field
     Then I should see "18.25" in the "price" field
     Then I should see "received" in the "status" field
     Then I should see the message "Success"
