@@ -54,7 +54,7 @@ BDD tests require the service to be running because unlike the the TDD unit test
 Run the tests using `behave`
 
 ```shell
-    $ python run.py &
+    $ python3 run.py &
     $ behave
 ```
 
