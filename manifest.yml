@@ -2,7 +2,7 @@
 # This manifest deploys a Python Flask application
 applications:
 - name: nyu-order-service-s19
-  memory: 512M
+  memory: 1024M
   instances: 1
   timeout: 180
   #random-route: true
