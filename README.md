@@ -86,4 +86,4 @@ If the VM is no longer needed you can remove it with:
     * tests/test_server.py -- test cases against the service
     * tests/test_orders.py -- test cases against the Order model
 
-This repo is part of the NYU masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** created by John Rofrano. 
+This repo is part of the NYU masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** created by John Rofrano.
